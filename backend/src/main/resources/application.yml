@@ -1,0 +1,45 @@
+app:
+  claude-logs-root: ${CLAUDE_LOGS_ROOT:${user.home}/.claude/projects}
+  timezone: ${APP_TIMEZONE:Asia/Shanghai}
+  rescan-window-days: ${RESCAN_WINDOW_DAYS:7}
+  # How many trailing days the chart shows, always ending on today.
+  chart-window-days: ${CHART_WINDOW_DAYS:30}
+  # Resolved against the working directory the jar is launched from. Every documented
+  # invocation in this project (mvnw -f backend/pom.xml, hooks/sync-usage.sh, the
+  # Actions workflow) runs with the repo root as the working directory, so this
+  # default just points at data/usage-history.json relative to that root.
+  history-file-path: ${HISTORY_FILE_PATH:${user.dir}/data/usage-history.json}
+  svg-output-path: ${SVG_OUTPUT_PATH:}
+
+  # Per-model $/token rates, used only to compute an ESTIMATE of what this usage would
+  # cost if billed via the API price list. Claude Code subscription usage is not billed
+  # per-token, so this number is illustrative, not a real charge. Edit freely.
+  pricing:
+    default-model: claude-sonnet-5
+    models:
+      claude-sonnet-5:
+        input-per-million: 3.00
+        output-per-million: 15.00
+        cache-write-per-million: 3.75
+        cache-read-per-million: 0.30
+      claude-opus-5:
+        input-per-million: 15.00
+        output-per-million: 75.00
+        cache-write-per-million: 18.75
+        cache-read-per-million: 1.50
+      claude-haiku-4-5:
+        input-per-million: 1.00
+        output-per-million: 5.00
+        cache-write-per-million: 1.25
+        cache-read-per-million: 0.10
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: token-farm
+
+logging:
+  level:
+    dev.tokenfarm: INFO

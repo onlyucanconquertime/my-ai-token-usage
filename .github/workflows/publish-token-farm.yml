@@ -1,0 +1,53 @@
+name: Publish token farm
+
+on:
+  schedule:
+    # Asia/Shanghai is UTC+8 with no DST, so these stay correct year-round:
+    - cron: "0 0 * * *"   # 08:00 Asia/Shanghai
+    - cron: "0 6 * * *"   # 14:00 Asia/Shanghai
+    - cron: "0 12 * * *"  # 20:00 Asia/Shanghai
+  workflow_dispatch: {}
+
+jobs:
+  render-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          cache-dependency-path: backend/pom.xml
+
+      - name: Build
+        run: mvn -f backend/pom.xml -q package -DskipTests
+
+      - name: Checkout profile repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.PROFILE_REPO }}
+          token: ${{ secrets.PROFILE_REPO_PAT }}
+          path: profile-repo
+
+      - name: Render SVG
+        run: |
+          java -jar backend/target/token-farm.jar \
+            --spring.profiles.active=render --spring.main.web-application-type=none \
+            --app.svg-output-path="$GITHUB_WORKSPACE/profile-repo/token-farm.svg"
+
+      - name: Commit and push if changed
+        working-directory: profile-repo
+        run: |
+          git config user.name "token-farm-bot"
+          git config user.email "${{ vars.PROFILE_REPO_COMMIT_EMAIL }}"
+          git add token-farm.svg
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update token farm $(date -u +%Y-%m-%d)"
+            git push
+          else
+            echo "No change in token-farm.svg, skipping commit."
+          fi
