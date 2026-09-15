@@ -206,7 +206,7 @@ public class TokenChartSvgGenerator {
     }
 
     /**
-     * The exact running total for today, since it isn't comparable to a finished day's
+     * The running total for today, since it isn't comparable to a finished day's
      * tier yet. Right-aligned to the bar's right edge (rather than centered) because
      * today is always the rightmost bar, so a centered label would overflow past the
      * canvas edge.
@@ -215,11 +215,9 @@ public class TokenChartSvgGenerator {
         int barTopY = baselineY - Math.max(1, blocks) * BLOCK_PITCH + BLOCK_GAP;
         int labelY = Math.max(TOP_MARGIN + TODAY_LABEL_RESERVED, barTopY - 14);
         int rightX = dayX + BAR_WIDTH;
-        String formattedNumber = String.format(Locale.US, "%,d", tokens);
+        String formattedNumber = formatTokens(tokens);
         svg.append("<text class=\"t\" x=\"").append(rightX).append("\" y=\"").append(labelY)
                 .append("\" font-size=\"9.5\" font-weight=\"700\" text-anchor=\"end\">").append(formattedNumber).append("</text>\n");
-        svg.append("<text class=\"t2\" x=\"").append(rightX).append("\" y=\"").append(labelY + 11);
-//                .append("\" font-size=\"8\" text-anchor=\"end\">today · in progress</text>\n");
     }
 
     /** A tiny pixel-sar (plus shape) marking the window's busiest finished day. */
