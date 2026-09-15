@@ -32,12 +32,12 @@ public class TokenChartSvgGenerator {
     private static final int BAR_WIDTH = BAR_COLUMNS * BLOCK_SIZE + (BAR_COLUMNS - 1) * BAR_COLUMN_GAP;
     private static final int DAY_GAP = 6;
     private static final int DAY_PITCH = BAR_WIDTH + DAY_GAP;
-    private static final int MAX_BAR_BLOCKS = 10;
+    private static final int MAX_BAR_BLOCKS = 20;
     private static final int CHART_HEIGHT = MAX_BAR_BLOCKS * BLOCK_PITCH;
 
     /** Fixed, not derived from observed data: normal daily usage is tens of millions of
      * tokens, so a small per-block unit (e.g. 1M) would peg every bar at the cap. */
-    private static final long PER_BLOCK_TOKENS = 20_000_000L;
+    private static final long PER_BLOCK_TOKENS = 10_000_000L;
     private static final long SCALE_MAX = MAX_BAR_BLOCKS * PER_BLOCK_TOKENS;
 
     private static final int LEFT_MARGIN = 56;
@@ -218,11 +218,11 @@ public class TokenChartSvgGenerator {
         String formattedNumber = String.format(Locale.US, "%,d", tokens);
         svg.append("<text class=\"t\" x=\"").append(rightX).append("\" y=\"").append(labelY)
                 .append("\" font-size=\"9.5\" font-weight=\"700\" text-anchor=\"end\">").append(formattedNumber).append("</text>\n");
-        svg.append("<text class=\"t2\" x=\"").append(rightX).append("\" y=\"").append(labelY + 11)
-                .append("\" font-size=\"8\" text-anchor=\"end\">today · in progress</text>\n");
+        svg.append("<text class=\"t2\" x=\"").append(rightX).append("\" y=\"").append(labelY + 11);
+//                .append("\" font-size=\"8\" text-anchor=\"end\">today · in progress</text>\n");
     }
 
-    /** A tiny pixel-star (plus shape) marking the window's busiest finished day. */
+    /** A tiny pixel-sar (plus shape) marking the window's busiest finished day. */
     private void appendSparkle(StringBuilder svg, int centerX, int centerY) {
         svg.append("<g class=\"px\" fill=\"var(--ink)\">\n");
         int[][] offsets = {{0, 0}, {0, -3}, {0, 3}, {-3, 0}, {3, 0}};
