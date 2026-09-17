@@ -41,7 +41,7 @@ public class TokenChartSvgGenerator {
     private static final long SCALE_MAX = MAX_BAR_BLOCKS * PER_BLOCK_TOKENS;
 
     private static final int LEFT_MARGIN = 56;
-    private static final int RIGHT_MARGIN = 16;
+    private static final int RIGHT_MARGIN = 26;
     private static final int TOP_MARGIN = 64;
     private static final int BOTTOM_MARGIN = 34;
     private static final int GROUND_STRIP_HEIGHT = 4;
@@ -207,17 +207,16 @@ public class TokenChartSvgGenerator {
 
     /**
      * The running total for today, since it isn't comparable to a finished day's
-     * tier yet. Right-aligned to the bar's right edge (rather than centered) because
-     * today is always the rightmost bar, so a centered label would overflow past the
-     * canvas edge.
+     * tier yet. Centered above the bar; RIGHT_MARGIN leaves enough room for the
+     * label even though today is always the rightmost bar.
      */
     private void appendTodayLabel(StringBuilder svg, int dayX, int baselineY, int blocks, long tokens) {
         int barTopY = baselineY - Math.max(1, blocks) * BLOCK_PITCH + BLOCK_GAP;
         int labelY = Math.max(TOP_MARGIN + TODAY_LABEL_RESERVED, barTopY - 14);
-        int rightX = dayX + BAR_WIDTH;
+        double centerX = dayX + BAR_WIDTH / 2.0;
         String formattedNumber = formatTokens(tokens);
-        svg.append("<text class=\"t\" x=\"").append(rightX).append("\" y=\"").append(labelY)
-                .append("\" font-size=\"9.5\" font-weight=\"700\" text-anchor=\"end\">").append(formattedNumber).append("</text>\n");
+        svg.append("<text class=\"t\" x=\"").append(centerX).append("\" y=\"").append(labelY)
+                .append("\" font-size=\"9.5\" font-weight=\"700\" text-anchor=\"middle\">").append(formattedNumber).append("</text>\n");
     }
 
     /** A tiny pixel-sar (plus shape) marking the window's busiest finished day. */
